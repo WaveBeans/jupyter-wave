@@ -1,0 +1,29 @@
+{
+  "properties": {
+    "apiVersion": "0.0.1-SNAPSHOT",
+    "libraryVersion": "0.1.0"
+  },
+  "link": "https://github.com/WaveBeans/jupyter-wave",
+  "repositories": [
+    "file:///home/jovyan/maven-local/repository"
+  ],
+  "dependencies": [
+    "io.wavebeans.jupyter:renderer:$apiVersion",
+    "io.wavebeans:lib:$libraryVersion"
+  ],
+  "imports": [
+    "io.wavebeans.jupyter.*",
+    "io.wavebeans.lib.*",
+    "io.wavebeans.lib.math.*",
+    "io.wavebeans.lib.stream.*",
+    "io.wavebeans.lib.stream.fft.*",
+    "io.wavebeans.lib.stream.window.*",
+    "io.wavebeans.lib.table.*",
+    "java.util.concurrent.TimeUnit.*"
+  ],
+  "init": [
+  ],
+  "renderers": {
+    "io.wavebeans.jupyter.My": "val a = $it; throw IllegalStateException(\"renderers ${a.toString()}\")"
+  }
+}
