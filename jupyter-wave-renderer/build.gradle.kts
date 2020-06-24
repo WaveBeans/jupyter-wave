@@ -22,6 +22,9 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        mavenLocal()
+        maven ("https://dl.bintray.com/kotlin/kotlin-eap")
+        maven ("https://kotlin.bintray.com/kotlinx")
     }
 
     val compileKotlin: KotlinCompile by tasks
@@ -43,6 +46,7 @@ allprojects {
         implementation(kotlin("stdlib-jdk8"))
         implementation(kotlin("reflect"))
         implementation("io.github.microutils:kotlin-logging:1.7.7")
+        implementation("io.wavebeans:lib:0.1.0-SNAPSHOT")
 
         testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
         testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")

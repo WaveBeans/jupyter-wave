@@ -14,6 +14,7 @@
   "imports": [
     "io.wavebeans.jupyter.*",
     "io.wavebeans.lib.*",
+    "io.wavebeans.lib.io.*",
     "io.wavebeans.lib.math.*",
     "io.wavebeans.lib.stream.*",
     "io.wavebeans.lib.stream.fft.*",
@@ -22,8 +23,9 @@
     "java.util.concurrent.TimeUnit.*"
   ],
   "init": [
+    "fun <T : Any> BeanStream<T>.preview(): PreviewBeanStream<T> = PreviewBeanStream(this, NoParams())"
   ],
   "renderers": {
-    "io.wavebeans.jupyter.My": "val a = $it; throw IllegalStateException(\"renderers ${a.toString()}\")"
+    "io.wavebeans.jupyter.PreviewBeanStream": "HTML($it.createPreview())"
   }
 }
