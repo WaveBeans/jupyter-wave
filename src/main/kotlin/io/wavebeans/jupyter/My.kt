@@ -10,6 +10,9 @@ class PreviewBeanStream<T: Any>(
     override fun asSequence(sampleRate: Float): Sequence<T> = input.asSequence(sampleRate)
 
     fun createPreview(): String {
+
+//      this.toTable()
+      
       val tableName = "my"
       return """
       <audio controls src="localhost:12345/table/my/stream">Upgrade your browser, bro!</audio>
