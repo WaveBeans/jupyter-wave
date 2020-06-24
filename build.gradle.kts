@@ -14,6 +14,7 @@ allprojects {
     group = "io.wavebeans.jupyter"
 
     val spekVersion: String by System.getProperties()
+    val kotlinxSerializationRuntimeVersion: String by System.getProperties()
 
     apply {
         plugin("kotlin")
@@ -47,6 +48,9 @@ allprojects {
         implementation(kotlin("reflect"))
         implementation("io.github.microutils:kotlin-logging:1.7.7")
         implementation("io.wavebeans:lib:0.1.0-SNAPSHOT")
+        implementation("io.wavebeans:exe:0.1.0-SNAPSHOT")
+        implementation("io.wavebeans:http:0.1.0-SNAPSHOT")
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinxSerializationRuntimeVersion")
 
         testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
         testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
@@ -80,9 +84,9 @@ allprojects {
 
 publishing {
   publications {
-    create<MavenPublication>("jupyter-wave-renderer") {
+    create<MavenPublication>("jupyter-wave") {
         groupId = "io.wavebeans.jupyter"
-        artifactId = "renderer"
+        artifactId = "wave"
 
         from(components["java"])
     }    

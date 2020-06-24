@@ -7,6 +7,7 @@ if [ "$1" == "andRun" ]; then
   
   docker run -it \
     -p 8888:8888 \
+    -p 12345:12345 \
     -v "$(pwd)"/notebooks:/home/jovyan/work ${MAVEN_REPO_VOLUME} \
     $TAG
 fi
