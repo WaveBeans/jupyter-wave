@@ -47,9 +47,10 @@ allprojects {
         implementation(kotlin("stdlib-jdk8"))
         implementation(kotlin("reflect"))
         implementation("io.github.microutils:kotlin-logging:1.7.7")
-        implementation("io.wavebeans:lib:0.1.0-SNAPSHOT")
-        implementation("io.wavebeans:exe:0.1.0-SNAPSHOT")
-        implementation("io.wavebeans:http:0.1.0-SNAPSHOT")
+        implementation("io.wavebeans:lib:0.2.0-SNAPSHOT")
+        implementation("io.wavebeans:exe:0.2.0-SNAPSHOT")
+        implementation("io.wavebeans:http:0.2.0-SNAPSHOT")
+        implementation("io.wavebeans.filesystems:dropbox:0.2.0-SNAPSHOT")
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinxSerializationRuntimeVersion")
 
         testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
