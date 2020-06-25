@@ -27,8 +27,7 @@ class PreviewBeanStream<T : Any>(
     override fun asSequence(sampleRate: Float): Sequence<T> = input.asSequence(sampleRate)
 
     fun createPreview(): String {
-
-        val alphabet = "qazwsxedcrfvtgbyhnujmikolp".toCharArray()
+        val alphabet = "qazwsxedcrfvtgbyhnujmikolp1234567890QAZWSXEDCRFVTGBYHNUJMIKOLP".toCharArray()
         val tableName = parameters.tableName ?: (0..9).map { alphabet[Random.nextInt(alphabet.size)] }.joinToString("")
         val tableOutput = TableOutput(this, parameters = TableOutputParams(
                 tableName,
@@ -39,7 +38,7 @@ class PreviewBeanStream<T : Any>(
         evalOutput(tableOutput, parameters.sampleRate)
 
         return """
-            <audio controls src="http://localhost:12345/audio/$tableName/stream/wav">Upgrade your browser, bro!</audio>
+            <audio controls preload="auto" src="http://localhost:12345/audio/$tableName/stream/wav?offset=${parameters.maxLength}">Upgrade your browser, bro!</audio>
         """.trimIndent()
     }
 }
