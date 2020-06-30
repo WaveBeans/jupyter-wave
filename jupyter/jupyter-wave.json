@@ -38,6 +38,6 @@
     "Evaluator.initEnvironment()"
   ],
   "renderers": {
-    "io.wavebeans.jupyter.PreviewBeanStream": "HTML($it.createPreview());"
+    "io.wavebeans.jupyter.PreviewBeanStream": "HTML($it.createPreview())"
   }
 }

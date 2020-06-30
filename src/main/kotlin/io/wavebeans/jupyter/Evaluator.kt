@@ -2,14 +2,14 @@ package io.wavebeans.jupyter
 
 import io.wavebeans.execution.SingleThreadedOverseer
 import io.wavebeans.http.HttpService
-import io.wavebeans.lib.io.StreamOutput
+import io.wavebeans.lib.table.TableOutput
 import mu.KotlinLogging
 
 object Evaluator {
 
     private val log = KotlinLogging.logger { }
 
-    var httpService: HttpService? = null
+    private var httpService: HttpService? = null
 
     fun initEnvironment(
             httpPort: Int = 12345
@@ -20,7 +20,7 @@ object Evaluator {
         }
     }
 
-    fun evalOutput(output: StreamOutput<*>, sampleRate: Float) {
+    fun evalTableOutput(output: TableOutput<*>, sampleRate: Float) {
         log.info { "Evaluating output $output with sample rate $sampleRate" }
         val overseer = SingleThreadedOverseer(listOf(output))
         overseer.eval(sampleRate)
