@@ -35,7 +35,7 @@ class PreviewBeanStream<T : Any>(
                 parameters.maxLength
         ))
 
-        evalOutput(tableOutput, parameters.sampleRate)
+        Evaluator.evalOutput(tableOutput, parameters.sampleRate)
 
         return """
             <audio controls preload="auto" src="http://localhost:12345/audio/$tableName/stream/wav?offset=${parameters.maxLength}">Upgrade your browser, bro!</audio>

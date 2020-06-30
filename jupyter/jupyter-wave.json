@@ -35,9 +35,9 @@
     "java.util.concurrent.TimeUnit.*"
   ],
   "init": [
-    "initEnvironment()"
+    "Evaluator.initEnvironment()"
   ],
   "renderers": {
-    "io.wavebeans.jupyter.PreviewBeanStream": "HTML($it.createPreview())"
+    "io.wavebeans.jupyter.PreviewBeanStream": "HTML($it.createPreview());"
   }
 }
