@@ -1,44 +1,50 @@
 package io.wavebeans.jupyter
 
 import io.wavebeans.lib.*
+import io.wavebeans.lib.stream.map
+import io.wavebeans.lib.stream.window.window
 import io.wavebeans.lib.table.TableOutput
 import io.wavebeans.lib.table.TableOutputParams
 import kotlin.random.Random
-import kotlin.reflect.KClass
 
-inline fun <reified T : Any> BeanStream<T>.preview(
+fun BeanStream<Sample>.preview(
         sampleRate: Float = 44100.0f,
-        tableName: String? = null,
         maxLength: TimeMeasure = 10.m
-): PreviewBeanStream<T> = PreviewBeanStream(this, PreviewBeanParams(sampleRate, tableName, T::class, maxLength))
+): PreviewSampleBeanStream = PreviewSampleBeanStream(
+        this.window(1024).map { sampleArrayOf(it) },
+        PreviewSampleBeanParams(sampleRate, maxLength)
+)
 
-class PreviewBeanParams<T : Any>(
+class PreviewSampleBeanParams(
         val sampleRate: Float,
-        val tableName: String?,
-        val clazz: KClass<out T>,
         val maxLength: TimeMeasure
 ) : BeanParams()
 
-class PreviewBeanStream<T : Any>(
-        override val input: BeanStream<T>,
-        override val parameters: PreviewBeanParams<T>
-) : BeanStream<T>, SinkBean<T> {
+class PreviewSampleBeanStream(
+        override val input: BeanStream<SampleArray>,
+        override val parameters: PreviewSampleBeanParams
+) : BeanStream<SampleArray>, SinkBean<SampleArray> {
 
-    override fun asSequence(sampleRate: Float): Sequence<T> = input.asSequence(sampleRate)
+    override fun asSequence(sampleRate: Float): Sequence<SampleArray> = input.asSequence(sampleRate)
 
-    fun createPreview(): String {
-        val alphabet = "qazwsxedcrfvtgbyhnujmikolp1234567890QAZWSXEDCRFVTGBYHNUJMIKOLP".toCharArray()
-        val tableName = parameters.tableName ?: (0..9).map { alphabet[Random.nextInt(alphabet.size)] }.joinToString("")
-        val tableOutput = TableOutput(this, parameters = TableOutputParams(
-                tableName,
-                parameters.clazz,
-                parameters.maxLength
-        ))
-
-        Evaluator.evalTableOutput(tableOutput, parameters.sampleRate)
+    fun renderPreview(): String {
+        val tableName = createPreview()
 
         return """
             <audio controls preload="auto" src="http://localhost:12345/audio/$tableName/stream/wav?offset=${parameters.maxLength}">Upgrade your browser, bro!</audio>
         """.trimIndent()
+    }
+
+    internal fun createPreview(): String {
+        val alphabet = "qazwsxedcrfvtgbyhnujmikolp1234567890QAZWSXEDCRFVTGBYHNUJMIKOLP".toCharArray()
+        val tableName = (0..9).map { alphabet[Random.nextInt(alphabet.size)] }.joinToString("")
+        val tableOutput = TableOutput(this, parameters = TableOutputParams(
+                tableName,
+                SampleArray::class,
+                parameters.maxLength
+        ))
+
+        Evaluator.evalTableOutput(tableOutput, parameters.sampleRate)
+        return tableName
     }
 }
