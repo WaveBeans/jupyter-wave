@@ -39,7 +39,7 @@ object Evaluator {
         val tableName = output.parameters.tableName
         val tracker = TableActivityTracker(tableName)
         MetricService.registerConnector(tracker)
-        tableTrackTasks.get(tableName)?.cancel(true) // cancel if table track task is already running
+        tableTrackTasks[tableName]?.cancel(true) // cancel if table track task is already running
         tableTrackTasks[tableName] = executor.scheduleWithFixedDelay({
             try {
                 if (!tracker.isStillActive()) {
@@ -55,7 +55,15 @@ object Evaluator {
                 }
             }
         }, 0, 5000, MILLISECONDS)
+    }
 
+    fun getInitJsHtml(): String {
+        return """
+            <script type="text/javascript" src="https://unpkg.com/wavesurfer.js"></script>
+            <script type="text/javascript">
+                ${javaClass.getResourceAsStream("/audio.js").reader().readText()}
+            </script>
+        """.trimIndent()
     }
 }
 

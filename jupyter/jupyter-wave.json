@@ -35,7 +35,9 @@
     "java.util.concurrent.TimeUnit.*"
   ],
   "init": [
-    "Evaluator.initEnvironment()"
+    "Evaluator.initEnvironment()",
+    "// Load library JS",
+    "DISPLAY(HTML(Evaluator.getInitJsHtml()))"
   ],
   "renderers": {
     "io.wavebeans.jupyter.PreviewSampleBeanStream": "HTML($it.renderPreview())"

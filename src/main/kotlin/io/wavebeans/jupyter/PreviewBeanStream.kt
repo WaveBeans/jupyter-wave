@@ -31,7 +31,10 @@ class PreviewSampleBeanStream(
         val tableName = createPreview()
 
         return """
-            <audio controls preload="auto" src="http://localhost:12345/audio/$tableName/stream/wav?offset=${parameters.maxLength}">Upgrade your browser, bro!</audio>
+            <div id="$tableName"></div>
+            <script>
+                WaveView('http://localhost:12345/audio/$tableName/stream/wav?offset=${parameters.maxLength}', '$tableName').init()
+            </script>
         """.trimIndent()
     }
 

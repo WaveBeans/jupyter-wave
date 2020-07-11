@@ -24,8 +24,8 @@ allprojects {
         jcenter()
         mavenCentral()
         mavenLocal()
-        maven ("https://dl.bintray.com/kotlin/kotlin-eap")
-        maven ("https://kotlin.bintray.com/kotlinx")
+        maven("https://dl.bintray.com/kotlin/kotlin-eap")
+        maven("https://kotlin.bintray.com/kotlinx")
     }
 
     val compileKotlin: KotlinCompile by tasks
@@ -58,6 +58,7 @@ allprojects {
         testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.13")
         testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
         testImplementation("ch.qos.logback:logback-classic:1.2.3")
+        testImplementation("io.ktor:ktor-server-netty:1.3.2")
 
     }
 
@@ -84,12 +85,12 @@ allprojects {
 }
 
 publishing {
-  publications {
-    create<MavenPublication>("jupyter-wave") {
-        groupId = "io.wavebeans.jupyter"
-        artifactId = "wave"
+    publications {
+        create<MavenPublication>("jupyter-wave") {
+            groupId = "io.wavebeans.jupyter"
+            artifactId = "wave"
 
-        from(components["java"])
-    }    
-  }
+            from(components["java"])
+        }
+    }
 }
