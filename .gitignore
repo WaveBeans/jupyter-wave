@@ -1,4 +1,5 @@
 notebooks/
+ivy_cache/
 .gradle/
 build/
 out/
