@@ -1,7 +1,7 @@
 package io.wavebeans.jupyter
 
 import io.wavebeans.execution.SingleThreadedOverseer
-import io.wavebeans.metrics.MetricService
+import io.wavebeans.fs.dropbox.DropboxWbFileDriver
 import io.wavebeans.http.HttpService
 import io.wavebeans.lib.table.TableOutput
 import mu.KotlinLogging
@@ -27,6 +27,20 @@ object Evaluator {
         log.info { "Initiating http service on port $httpPort. Current instance is $httpService" }
         if (httpService == null) {
             httpService = HttpService(serverPort = httpPort).start()
+        }
+        val clientIdentifier = System.getenv("DROPBOX_CLIENT_IDENTIFIER")
+        val accessToken = System.getenv("DROPBOX_ACCESS_TOKEN")
+        if (!clientIdentifier.isNullOrEmpty() && !accessToken.isNullOrEmpty()) {
+            log.info {
+                "Initializing Dropbox File Driver " +
+                        "clientIdentifier=****${clientIdentifier.takeLast(6)}, " +
+                        "accessToken=****${accessToken.takeLast(6)}"
+            }
+            DropboxWbFileDriver.configure(
+                    clientIdentifier = clientIdentifier,
+                    accessToken = accessToken,
+                    force = true
+            )
         }
     }
 
