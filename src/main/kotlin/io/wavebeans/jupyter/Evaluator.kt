@@ -1,7 +1,7 @@
 package io.wavebeans.jupyter
 
 import io.wavebeans.execution.SingleThreadedOverseer
-import io.wavebeans.execution.metrics.MetricService
+import io.wavebeans.metrics.MetricService
 import io.wavebeans.http.HttpService
 import io.wavebeans.lib.table.TableOutput
 import mu.KotlinLogging
@@ -37,8 +37,7 @@ object Evaluator {
         val evalFuture = overseer.eval(sampleRate)
 
         val tableName = output.parameters.tableName
-        val tracker = TableActivityTracker(tableName)
-        MetricService.registerConnector(tracker)
+        val tracker = LocalTableActivityTracker.createAndRegister(tableName)
         tableTrackTasks[tableName]?.cancel(true) // cancel if table track task is already running
         tableTrackTasks[tableName] = executor.scheduleWithFixedDelay({
             try {

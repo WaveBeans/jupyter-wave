@@ -15,6 +15,7 @@
     "io.wavebeans:http:$libraryVersion",
     "io.wavebeans.filesystems:core:$libraryVersion",
     "io.wavebeans.filesystems:dropbox:$libraryVersion",
+    "io.wavebeans.metrics:core:$libraryVersion",
     "io.ktor:ktor-server-core:$ktorVersion",
     "io.ktor:ktor-server-netty:$ktorVersion",
     "io.ktor:ktor-serialization:$ktorVersion",

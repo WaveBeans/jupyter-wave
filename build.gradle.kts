@@ -51,6 +51,7 @@ allprojects {
         implementation("io.wavebeans:exe:0.2.0-SNAPSHOT")
         implementation("io.wavebeans:http:0.2.0-SNAPSHOT")
         implementation("io.wavebeans.filesystems:dropbox:0.2.0-SNAPSHOT")
+        implementation("io.wavebeans.metrics:core:0.2.0-SNAPSHOT")
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinxSerializationRuntimeVersion")
 
         testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
