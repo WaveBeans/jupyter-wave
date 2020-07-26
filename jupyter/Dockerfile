@@ -40,6 +40,6 @@ RUN conda install -c jetbrains kotlin-jupyter-kernel
 
 USER jovyan
 
-ADD jupyter-wave.json /home/jovyan/.jupyter_kotlin/libraries/
+COPY jupyter-wave.json /home/jovyan/.jupyter_kotlin/libraries/
 
 ENTRYPOINT jupyter lab --NotebookApp.token=''

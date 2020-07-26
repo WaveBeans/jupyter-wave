@@ -1,7 +1,7 @@
 {
   "properties": {
-    "apiVersion": "0.0.1-SNAPSHOT",
-    "libraryVersion": "0.2.0-SNAPSHOT"
+    "apiVersion": "$VERSION",
+    "libraryVersion": "$WAVEBEANS_VERSION"
   },
   "link": "https://github.com/WaveBeans/jupyter-wave",
   "repositories": [

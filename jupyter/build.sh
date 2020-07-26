@@ -2,7 +2,20 @@
 
 TAG=jupyter-wave
 
+VERSION=$(cat ../gradle.properties | grep version | sed -E "s/[^=]+=//")
+WAVEBEANS_VERSION=$(cat ../gradle.properties | grep wavebeansVersion  | sed -E "s/[^=]+=//")
+
+echo "VERSION: '$VERSION'"
+echo "WAVEBEANS_VERSION: '$WAVEBEANS_VERSION'"
+
+cat jupyter-wave.json.tpl | \
+  sed "s/\$VERSION/$VERSION/" | \
+  sed "s/\$WAVEBEANS_VERSION/$WAVEBEANS_VERSION/" \
+  > jupyter-wave.json
+
 docker build -t $TAG .
+
+rm jupyter-wave.json
 
 if [ "$1" == "andRun" ]; then
   DOCKER_BUILD_DIR=$(pwd)

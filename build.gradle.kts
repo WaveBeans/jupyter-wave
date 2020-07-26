@@ -13,6 +13,7 @@ group = "io.wavebeans.jupyter"
 
 val spekVersion: String by System.getProperties()
 val kotlinxSerializationRuntimeVersion: String by System.getProperties()
+val wavebeansVersion: String by System.getProperties()
 
 apply {
     plugin("kotlin")
@@ -45,11 +46,11 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
     implementation("io.github.microutils:kotlin-logging:1.7.7")
-    implementation("io.wavebeans:lib:0.2.0-SNAPSHOT")
-    implementation("io.wavebeans:exe:0.2.0-SNAPSHOT")
-    implementation("io.wavebeans:http:0.2.0-SNAPSHOT")
-    implementation("io.wavebeans.filesystems:dropbox:0.2.0-SNAPSHOT")
-    implementation("io.wavebeans.metrics:core:0.2.0-SNAPSHOT")
+    implementation("io.wavebeans:lib:$wavebeansVersion")
+    implementation("io.wavebeans:exe:$wavebeansVersion")
+    implementation("io.wavebeans:http:$wavebeansVersion")
+    implementation("io.wavebeans.filesystems:dropbox:$wavebeansVersion")
+    implementation("io.wavebeans.metrics:core:$wavebeansVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinxSerializationRuntimeVersion")
 
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
