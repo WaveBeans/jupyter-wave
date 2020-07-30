@@ -1,4 +1,4 @@
-FROM jupyter/minimal-notebook
+FROM jupyter/minimal-notebook:b90cce83f37b
 
 USER root
 
@@ -41,5 +41,3 @@ RUN conda install -c jetbrains kotlin-jupyter-kernel
 USER jovyan
 
 COPY jupyter-wave.json /home/jovyan/.jupyter_kotlin/libraries/
-
-ENTRYPOINT jupyter lab --NotebookApp.token=''

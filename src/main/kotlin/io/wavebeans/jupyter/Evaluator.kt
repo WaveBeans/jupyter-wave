@@ -11,6 +11,34 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
+fun getEnvVar(name: String, getenv: (String) -> (String?) = { System.getenv(it) }): String? {
+    val v = getenv(name)
+    return v?.replace("${'\\'}${'$'}\\{([\\w_]+)\\}".toRegex()) {
+        val innerVar = it.groupValues[1]
+        getenv(innerVar) ?: throw IllegalStateException("Env var `$innerVar` is not populated")
+    }
+}
+
+object Config {
+
+    var advertisedHost: String = "localhost"
+    var advertisedPort: Int? = null
+    var advertisedProtocol: String = "http"
+    var httpPort: Int? = null
+    var dropBoxClientIdentifier: String? = null
+    var dropBoxAccessToken: String? = null
+
+    fun readEnv() {
+        advertisedHost = getEnvVar("ADVERTISED_HTTP_HOST") ?: "localhost"
+        advertisedPort = getEnvVar("ADVERTISED_HTTP_PORT")?.toInt()
+        advertisedProtocol = getEnvVar("ADVERTISED_HTTP_PROTOCOL") ?: "http"
+        httpPort = getEnvVar("HTTP_PORT")?.toInt()
+        dropBoxClientIdentifier = getEnvVar("DROPBOX_CLIENT_IDENTIFIER")
+        dropBoxAccessToken = getEnvVar("DROPBOX_ACCESS_TOKEN")
+    }
+
+}
+
 object Evaluator {
 
     private val log = KotlinLogging.logger { }
@@ -21,15 +49,25 @@ object Evaluator {
 
     private val tableTrackTasks = ConcurrentHashMap<String, Future<*>>()
 
-    fun initEnvironment(
-            httpPort: Int = 12345
-    ) {
-        log.info { "Initiating http service on port $httpPort. Current instance is $httpService" }
-        if (httpService == null) {
-            httpService = HttpService(serverPort = httpPort).start()
+    fun initEnvironment() {
+        Config.readEnv()
+        init()
+    }
+
+    fun init(restartHttp: Boolean = false) {
+        val httpPort = Config.httpPort
+        if (httpPort != null) {
+            log.info { "Initiating http service on port $httpPort. Current instance is $httpService" }
+            if (httpService == null) {
+                httpService = HttpService(serverPort = httpPort).start()
+            } else if (restartHttp) {
+                httpService?.close()
+                httpService = HttpService(serverPort = httpPort).start()
+            }
         }
-        val clientIdentifier = System.getenv("DROPBOX_CLIENT_IDENTIFIER")
-        val accessToken = System.getenv("DROPBOX_ACCESS_TOKEN")
+
+        val clientIdentifier = Config.dropBoxClientIdentifier
+        val accessToken = Config.dropBoxAccessToken
         if (!clientIdentifier.isNullOrEmpty() && !accessToken.isNullOrEmpty()) {
             log.info {
                 "Initializing Dropbox File Driver " +

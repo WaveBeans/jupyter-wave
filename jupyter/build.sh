@@ -1,8 +1,10 @@
 #!/bin/bash
 
-TAG=jupyter-wave
+IMAGE=wavebeans/jupyter-wave
 
-VERSION=$(cat ../gradle.properties | grep version | sed -E "s/[^=]+=//")
+if [ -z "$VERSION" ]; then
+  VERSION=$(cat ../gradle.properties | grep version | sed -E "s/[^=]+=//")
+fi
 WAVEBEANS_VERSION=$(cat ../gradle.properties | grep wavebeansVersion  | sed -E "s/[^=]+=//")
 
 echo "VERSION: '$VERSION'"
@@ -12,6 +14,8 @@ cat jupyter-wave.json.tpl | \
   sed "s/\$VERSION/$VERSION/" | \
   sed "s/\$WAVEBEANS_VERSION/$WAVEBEANS_VERSION/" \
   > jupyter-wave.json
+
+TAG=$IMAGE:$VERSION
 
 docker build -t $TAG .
 
@@ -32,12 +36,17 @@ if [ "$1" == "andRun" ]; then
   # run
   docker run -it \
     -p 8888:8888 \
-    -p 12345:12345 \
+    -p 2844:2844 \
     -e DROPBOX_CLIENT_IDENTIFIER=${DROPBOX_CLIENT_IDENTIFIER} \
     -e DROPBOX_ACCESS_TOKEN=${DROPBOX_ACCESS_TOKEN} \
+    -e HTTP_PORT=2844 \
     -v "$(pwd)"/notebooks:/home/jovyan/work \
     -v ${HOME}/.m2:/home/jovyan/maven-local \
     -v "$(pwd)"/ivy_cache:/home/jovyan/.ivy2/cache \
-    $TAG
+    "${TAG}" \
+    jupyter lab --NotebookApp.token=''
+fi
 
+if [ "$1" == "andPush" ]; then
+    docker push $TAG
 fi

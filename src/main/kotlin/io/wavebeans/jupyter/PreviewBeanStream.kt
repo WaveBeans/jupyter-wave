@@ -33,7 +33,7 @@ class PreviewSampleBeanStream(
         return """
             <div id="$tableName"></div>
             <script>
-                WaveView('http://localhost:12345/audio/$tableName/stream/wav?offset=${parameters.maxLength}', '$tableName').init()
+                WaveView('${Config.advertisedProtocol}://${Config.advertisedHost}:${Config.advertisedPort}/audio/$tableName/stream/wav?offset=${parameters.maxLength}', '$tableName').init()
             </script>
         """.trimIndent()
     }

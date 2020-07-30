@@ -4,12 +4,19 @@ plugins {
     val kotlinVersion: String by System.getProperties()
 
     kotlin("jvm") version kotlinVersion
+    id("com.jfrog.bintray") version "1.8.4"
 
     `java-library`
     `maven-publish`
 }
 
 group = "io.wavebeans.jupyter"
+version = properties["version"].toString().let {
+    if (it.endsWith("-SNAPSHOT"))
+        it.removeSuffix("-SNAPSHOT") + "." + System.currentTimeMillis().toString()
+    else
+        it
+}
 
 val spekVersion: String by System.getProperties()
 val kotlinxSerializationRuntimeVersion: String by System.getProperties()
@@ -80,8 +87,26 @@ publishing {
         create<MavenPublication>("jupyter-wave") {
             groupId = "io.wavebeans.jupyter"
             artifactId = "wave"
+            version = project.version.toString()
 
             from(components["java"])
         }
     }
+}
+
+bintray {
+    user = findProperty("bintray.user")?.toString() ?: ""
+    key = findProperty("bintray.key")?.toString() ?: ""
+    setPublications("jupyter-wave")
+    pkg(delegateClosureOf<com.jfrog.bintray.gradle.BintrayExtension.PackageConfig> {
+        repo = "wavebeans"
+        name = "wavebeans"
+        userOrg = "wavebeans"
+        vcsUrl = "https://github.com/WaveBeans/wavebeans"
+        setLicenses("Apache-2.0")
+        publish = true
+        version(delegateClosureOf<com.jfrog.bintray.gradle.BintrayExtension.VersionConfig> {
+            name = project.version.toString()
+        })
+    })
 }

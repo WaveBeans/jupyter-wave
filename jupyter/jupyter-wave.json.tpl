@@ -5,7 +5,8 @@
   },
   "link": "https://github.com/WaveBeans/jupyter-wave",
   "repositories": [
-    "file:///home/jovyan/maven-local/repository"
+    "file:///home/jovyan/maven-local/repository",
+    "https://dl.bintray.com/wavebeans/wavebeans/"
   ],
   "dependencies": [
     "io.wavebeans.jupyter:wave:$apiVersion",
