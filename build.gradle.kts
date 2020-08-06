@@ -21,6 +21,8 @@ version = properties["version"].toString().let {
 val spekVersion: String by System.getProperties()
 val kotlinxSerializationRuntimeVersion: String by System.getProperties()
 val wavebeansVersion: String by System.getProperties()
+val letsPlotVersion: String by System.getProperties()
+val letsPlotKotlinApiKernelVersion: String by System.getProperties()
 
 apply {
     plugin("kotlin")
@@ -30,6 +32,7 @@ repositories {
     jcenter()
     mavenCentral()
     mavenLocal()
+    maven("https://jetbrains.bintray.com/lets-plot-maven")
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://kotlin.bintray.com/kotlinx")
 }
@@ -59,6 +62,8 @@ dependencies {
     implementation("io.wavebeans.filesystems:dropbox:$wavebeansVersion")
     implementation("io.wavebeans.metrics:core:$wavebeansVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinxSerializationRuntimeVersion")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-api-kernel:$letsPlotKotlinApiKernelVersion")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
 
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")

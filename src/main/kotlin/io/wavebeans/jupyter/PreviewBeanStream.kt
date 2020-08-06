@@ -2,16 +2,18 @@ package io.wavebeans.jupyter
 
 import io.wavebeans.lib.*
 import io.wavebeans.lib.stream.map
+import io.wavebeans.lib.stream.trim
 import io.wavebeans.lib.stream.window.window
 import io.wavebeans.lib.table.TableOutput
 import io.wavebeans.lib.table.TableOutputParams
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 fun BeanStream<Sample>.preview(
         sampleRate: Float = 44100.0f,
         maxLength: TimeMeasure = 10.m
 ): PreviewSampleBeanStream = PreviewSampleBeanStream(
-        this.window(1024).map { sampleArrayOf(it) },
+        this.trim(maxLength.ns(), TimeUnit.NANOSECONDS).window(1024).map { sampleArrayOf(it) },
         PreviewSampleBeanParams(sampleRate, maxLength)
 )
 

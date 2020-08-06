@@ -6,7 +6,8 @@
   "link": "https://github.com/WaveBeans/jupyter-wave",
   "repositories": [
     "file:///home/jovyan/maven-local/repository",
-    "https://dl.bintray.com/wavebeans/wavebeans/"
+    "https://dl.bintray.com/wavebeans/wavebeans/",
+    "https://jetbrains.bintray.com/lets-plot-maven"
   ],
   "dependencies": [
     "io.wavebeans.jupyter:wave:$apiVersion",
