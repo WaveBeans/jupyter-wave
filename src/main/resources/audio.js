@@ -1,15 +1,18 @@
 (function() {
     window.WaveView = function (url, container) {
-        const waveSurfer = WaveSurfer.create({
-            container: "#" + container,
-            scrollParent: true
-        });
+        let waveSurfer = null
 
         function playPause() {
-            waveSurfer.playPause()
+            if (waveSurfer)
+                waveSurfer.playPause()
         }
 
         function _init() {
+            waveSurfer = WaveSurfer.create({
+                container: "#" + container,
+                scrollParent: true
+            });
+
             waveSurfer.load(url);
             waveSurfer.on('ready', function () {
                 waveSurfer.play();

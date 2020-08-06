@@ -26,12 +26,13 @@ if [ "$1" == "andRun" ]; then
 
   # prepare artifacts
   cd ../
-  ./gradlew clean publishToMavenLocal
+  ./gradlew clean publishToMavenLocal --info
 
   cd $DOCKER_BUILD_DIR || exit
 
   # make sure wavebeans artifacts are fresh during the run
-  rm -rf ./ivy_cache/io.wavebeans*
+  rm -rf ./ivy_cache/io.wavebeans.*
+  rm -rf ./ivy_cache/io.wavebeans
 
   # run
   docker run -it \

@@ -110,7 +110,10 @@ object Evaluator {
 
     fun getInitJsHtml(): String {
         return """
-            <script type="text/javascript" src="https://unpkg.com/wavesurfer.js"></script>
+            <script type="text/javascript">
+                ${javaClass.getResourceAsStream("/wavesurfer.js").reader().readText()}
+                ${javaClass.getResourceAsStream("/wavesurfer.timeline.js").reader().readText()}
+            </script>
             <script type="text/javascript">
                 ${javaClass.getResourceAsStream("/audio.js").reader().readText()}
             </script>

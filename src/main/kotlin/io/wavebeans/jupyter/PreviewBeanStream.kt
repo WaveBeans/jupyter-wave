@@ -30,10 +30,11 @@ class PreviewSampleBeanStream(
     fun renderPreview(): String {
         val tableName = createPreview()
 
+        val server = "${Config.advertisedProtocol}://${Config.advertisedHost}:${Config.advertisedPort ?: Config.httpPort}"
         return """
             <div id="$tableName"></div>
             <script>
-                WaveView('${Config.advertisedProtocol}://${Config.advertisedHost}:${Config.advertisedPort}/audio/$tableName/stream/wav?offset=${parameters.maxLength}', '$tableName').init()
+                WaveView('$server/audio/$tableName/stream/wav?offset=${parameters.maxLength}', '$tableName').init()
             </script>
         """.trimIndent()
     }
