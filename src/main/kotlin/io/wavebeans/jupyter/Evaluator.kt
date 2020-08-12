@@ -19,26 +19,6 @@ fun getEnvVar(name: String, getenv: (String) -> (String?) = { System.getenv(it) 
     }
 }
 
-object Config {
-
-    var advertisedHost: String = "localhost"
-    var advertisedPort: Int? = null
-    var advertisedProtocol: String = "http"
-    var httpPort: Int? = null
-    var dropBoxClientIdentifier: String? = null
-    var dropBoxAccessToken: String? = null
-
-    fun readEnv() {
-        advertisedHost = getEnvVar("ADVERTISED_HTTP_HOST") ?: "localhost"
-        advertisedPort = getEnvVar("ADVERTISED_HTTP_PORT")?.toInt()
-        advertisedProtocol = getEnvVar("ADVERTISED_HTTP_PROTOCOL") ?: "http"
-        httpPort = getEnvVar("HTTP_PORT")?.toInt()
-        dropBoxClientIdentifier = getEnvVar("DROPBOX_CLIENT_IDENTIFIER")
-        dropBoxAccessToken = getEnvVar("DROPBOX_ACCESS_TOKEN")
-    }
-
-}
-
 object Evaluator {
 
     private val log = KotlinLogging.logger { }
@@ -49,37 +29,38 @@ object Evaluator {
 
     private val tableTrackTasks = ConcurrentHashMap<String, Future<*>>()
 
-    fun initEnvironment() {
-        Config.readEnv()
-        init()
-    }
-
-    fun init(restartHttp: Boolean = false) {
-        val httpPort = Config.httpPort
-        if (httpPort != null) {
-            log.info { "Initiating http service on port $httpPort. Current instance is $httpService" }
-            if (httpService == null) {
-                httpService = HttpService(serverPort = httpPort).start()
-            } else if (restartHttp) {
+    init {
+        Config.instance.watch(Config.httpPortVar) {
+            val httpPort = it?.toInt()
+            if (httpPort != null) {
+                log.info { "Initiating http service on port $httpPort. Current instance is $httpService" }
                 httpService?.close()
                 httpService = HttpService(serverPort = httpPort).start()
+            } else {
+                log.info { "Stopping http service $httpService" }
+                httpService?.close()
             }
         }
+        Config.instance.watch(Config.dropboxAccessTokenVar) {
+            val clientIdentifier = Config.instance.dropBoxClientIdentifier
+            val accessToken = Config.instance.dropBoxAccessToken
+            if (!clientIdentifier.isNullOrEmpty() && !accessToken.isNullOrEmpty()) {
+                log.info {
+                    "Initializing Dropbox File Driver " +
+                            "clientIdentifier=****${clientIdentifier.takeLast(6)}, " +
+                            "accessToken=****${accessToken.takeLast(6)}"
+                }
+                DropboxWbFileDriver.configure(
+                        clientIdentifier = clientIdentifier,
+                        accessToken = accessToken,
+                        force = true
+                )
+            }
+        }
+    }
 
-        val clientIdentifier = Config.dropBoxClientIdentifier
-        val accessToken = Config.dropBoxAccessToken
-        if (!clientIdentifier.isNullOrEmpty() && !accessToken.isNullOrEmpty()) {
-            log.info {
-                "Initializing Dropbox File Driver " +
-                        "clientIdentifier=****${clientIdentifier.takeLast(6)}, " +
-                        "accessToken=****${accessToken.takeLast(6)}"
-            }
-            DropboxWbFileDriver.configure(
-                    clientIdentifier = clientIdentifier,
-                    accessToken = accessToken,
-                    force = true
-            )
-        }
+    fun initEnvironment() {
+        Config.instance.readEnv()
     }
 
     fun evalTableOutput(output: TableOutput<*>, sampleRate: Float) {

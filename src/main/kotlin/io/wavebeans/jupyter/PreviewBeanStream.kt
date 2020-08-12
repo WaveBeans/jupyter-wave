@@ -32,7 +32,7 @@ class PreviewSampleBeanStream(
     fun renderPreview(): String {
         val tableName = createPreview()
 
-        val server = "${Config.advertisedProtocol}://${Config.advertisedHost}:${Config.advertisedPort ?: Config.httpPort}"
+        val server = "${Config.instance.advertisedProtocol}://${Config.instance.advertisedHost}:${Config.instance.advertisedPort}"
         return """
             <div id="$tableName"></div>
             <script>

@@ -23,6 +23,7 @@ val kotlinxSerializationRuntimeVersion: String by System.getProperties()
 val wavebeansVersion: String by System.getProperties()
 val letsPlotVersion: String by System.getProperties()
 val letsPlotKotlinApiKernelVersion: String by System.getProperties()
+val javalinVersion: String by System.getProperties()
 
 apply {
     plugin("kotlin")
@@ -64,14 +65,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinxSerializationRuntimeVersion")
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-api-kernel:$letsPlotKotlinApiKernelVersion")
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
+    implementation("io.javalin:javalin:$javalinVersion")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
 
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.13")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-    testImplementation("ch.qos.logback:logback-classic:1.2.3")
-    testImplementation("io.ktor:ktor-server-netty:1.3.2")
-
+    testImplementation("com.konghq:unirest-java:3.7.04")
 }
 
 java {
