@@ -33,6 +33,12 @@ repositories {
     jcenter()
     mavenCentral()
     mavenLocal()
+    repositories {
+        maven {
+            name = "Bintray WaveBeans"
+            url = uri("https://dl.bintray.com/wavebeans/wavebeans")
+        }
+    }
     maven("https://jetbrains.bintray.com/lets-plot-maven")
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://kotlin.bintray.com/kotlinx")
