@@ -5,6 +5,7 @@ plugins {
 
     kotlin("jvm") version kotlinVersion
     id("com.jfrog.bintray") version "1.8.4"
+    id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion
 
     `java-library`
     `maven-publish`
@@ -68,8 +69,8 @@ dependencies {
     implementation("io.wavebeans:http:$wavebeansVersion")
     implementation("io.wavebeans.filesystems:dropbox:$wavebeansVersion")
     implementation("io.wavebeans.metrics:core:$wavebeansVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinxSerializationRuntimeVersion")
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-api-kernel:$letsPlotKotlinApiKernelVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationRuntimeVersion")
+    implementation("org.jetbrains.lets-plot-kotlin:lets-plot-kotlin-api:$letsPlotKotlinApiKernelVersion")
     implementation("org.jetbrains.lets-plot:lets-plot-common:$letsPlotVersion")
     implementation("io.javalin:javalin:$javalinVersion")
     implementation("ch.qos.logback:logback-classic:1.2.3")

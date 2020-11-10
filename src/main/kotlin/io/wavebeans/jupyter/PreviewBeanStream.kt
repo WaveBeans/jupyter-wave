@@ -13,7 +13,7 @@ fun BeanStream<Sample>.preview(
         sampleRate: Float = 44100.0f,
         maxLength: TimeMeasure = 10.m
 ): PreviewSampleBeanStream = PreviewSampleBeanStream(
-        this.trim(maxLength.ns(), TimeUnit.NANOSECONDS).window(1024).map { sampleArrayOf(it) },
+        this.trim(maxLength.ns(), TimeUnit.NANOSECONDS).window(1024).map { sampleVectorOf(it) },
         PreviewSampleBeanParams(sampleRate, maxLength)
 )
 
@@ -23,11 +23,11 @@ class PreviewSampleBeanParams(
 ) : BeanParams()
 
 class PreviewSampleBeanStream(
-        override val input: BeanStream<SampleArray>,
+        override val input: BeanStream<SampleVector>,
         override val parameters: PreviewSampleBeanParams
-) : BeanStream<SampleArray>, SinkBean<SampleArray> {
+) : BeanStream<SampleVector>, SinkBean<SampleVector> {
 
-    override fun asSequence(sampleRate: Float): Sequence<SampleArray> = input.asSequence(sampleRate)
+    override fun asSequence(sampleRate: Float): Sequence<SampleVector> = input.asSequence(sampleRate)
 
     fun renderPreview(): String {
         val tableName = createPreview()
@@ -46,8 +46,9 @@ class PreviewSampleBeanStream(
         val tableName = (0..9).map { alphabet[Random.nextInt(alphabet.size)] }.joinToString("")
         val tableOutput = TableOutput(this, parameters = TableOutputParams(
                 tableName,
-                SampleArray::class,
-                parameters.maxLength
+                SampleVector::class,
+                parameters.maxLength,
+                true
         ))
 
         Evaluator.evalTableOutput(tableOutput, parameters.sampleRate)
