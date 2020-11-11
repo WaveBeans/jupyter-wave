@@ -1,13 +1,30 @@
 # Jupyter Wave
 
-Jupyter + WaveBeans plugins and integration
+[ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.0.3.1605121111547) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.0.3.1605121111547/link)
 
-Based on:
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Jupyter Plugin](#jupyter-plugin)
+- [Running via Docker](#running-via-docker)
+- [Runtime Configuration](#runtime-configuration)
+- [API extension](#api-extension)
+  - [Preview](#preview)
+  - [Plot](#plot)
+    - [Samples](#samples)
+    - [FftSample](#fftsample)
+  - [Data Frames](#data-frames)
+- [Management server](#management-server)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+Jupyter + WaveBeans plugins and integration. It is based on:
 
 * [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter)
 * Kotlin 1.4 version of [WaveBeans](https://github.com/WaveBeans/wavebeans/pull/72)
 
-Project status: underlying projects are in early alpha stage, moreover project bases on non-stable version of Kotlin and experimental kotlin Scripting API, hence the extension should also be considered experimental as well.
+Project status: underlying projects are in early alpha and beta stages, the extension should also be considered experimental at this point as well.
 
 ## Jupyter Plugin
 
@@ -17,7 +34,7 @@ Overall follow [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter) docume
 
 ## Running via Docker
 
-The recommended way to run Jupyter instance is via Docker. In `jupyter/` directory you can find `Dockerfile` which build the image. 
+The recommended way to run Jupyter instance is via Docker. In `jupyter/` directory you can find `Dockerfile` which builds the image. 
 
 There is a `build.sh` script that automates the build and run (via `andRun` parameter) of the docker image. Default run behaviour start everything that needs to make Jupyter accessible on `http://localhost:8888`.
 
@@ -26,7 +43,7 @@ In order to run by yourself use that commands as a base:
 ```bash
   cd jupyter/
 
-  # prepare the library descriptor, assuming VERSION and WAVEBEANS_VERSION are populated with correct version in maven repos
+  # prepare the library descriptor, assuming VERSION and WAVEBEANS_VERSION are populated with correct version in maven repos (local or remote)
   cat jupyter-wave.json.tpl | \
       sed "s/\$VERSION/$VERSION/" | \
       sed "s/\$WAVEBEANS_VERSION/$WAVEBEANS_VERSION/" \
@@ -42,6 +59,7 @@ In order to run by yourself use that commands as a base:
     -e DROPBOX_CLIENT_IDENTIFIER=${DROPBOX_CLIENT_IDENTIFIER} \
     -e DROPBOX_ACCESS_TOKEN=${DROPBOX_ACCESS_TOKEN} \
     -e HTTP_PORT=2844 \
+    -e MANAGEMENT_SERVER_PORT=2845 \
     -v "$(pwd)"/notebooks:/home/jovyan/work \
     -v ${HOME}/.m2:/home/jovyan/maven-local \
     -v "$(pwd)"/ivy_cache:/home/jovyan/.ivy2/cache \
@@ -88,7 +106,7 @@ Certain things to keep in mind:
 
 ### Plot
 
-You may plot out the waveform or any `FiniteStream<Sample>` with `lets_plot` kotlin library.
+There are builtin plotting abilities with [`lets_plot`](https://github.com/JetBrains/lets-plot-kotlin) library for some streams.
 
 First of all you need to make sure the library is connected to the notebook:
 
@@ -96,11 +114,21 @@ First of all you need to make sure the library is connected to the notebook:
 %use lets-plot
 ```
 
-Then you may use `.plot()` function, but before makre sure you trimmed it:
+And then depending on the stream you may call `.plot()` function tuning the output.
 
+#### Samples
+
+You may plot out the waveform of any `FiniteStream<Sample>`.
+
+Then you may use `.plot()` function, but before make sure you trimmed it:
+
+```kotlin
+440.sine()
+    .trim(10)
+    .plot()
 ```
-440.sine().trim(100).plot()
-```
+
+![Plotting 440Hz sine](assets/440_sine_plot.png "Plotting 440Hz sine")
 
 Plot function allows you to specify the sample rate via `sampleRate` parameter, by default it is 44100Hz:
 
@@ -108,9 +136,75 @@ Plot function allows you to specify the sample rate via `sampleRate` parameter, 
 440.sine().trim(100).plot(sampleRate = 22050.0f)
 ```
 
+#### FftSample
+
+You may plot stream of `FftSample`s as a heat map using `.plot()` function on trimmed stream:
+
+```kotlin
+wave("dropbox:///2.wav")
+    .window(1001, 501)
+    .hamming()
+    .fft(1024)
+    .trim(2000)
+    .plot(freqCutOff = 0 to 4500, gsize = 800 to 600)
+```
+
+![Plotting FFT of wave file](assets/wave_fft_in_motion_plot.png "Plotting FFT of wave file")
+
+Method has following parameters:
+
+* `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
+* `freqCutOff` as `Pair<Int, Int>` - the range of the frequencies to display, by default `0 to sampleRate.toInt() / 2`.
+* `gsize` as `Pair<Int, Int>` - the size (x and y respectively) of the rendering image provided to `lets_plot.ggsize()`, by default `1000 to 600`.
+
+You may also plot the FFT at specific time moment by specifying `offset` parameter. The `offset` has `TimeMeasure` type, i.e. `100.ms`, `3.s`, etc. 
+
+```kotlin
+wave("dropbox:///2.wav")
+    .window(1001, 501)
+    .hamming()
+    .fft(1024)
+    .trim(2000)
+    .plot(offset = 1000.ms, freqCutOff = 0 to 4500)
+```
+
+![Plotting FFT of wave file](assets/wave_fft_plot.png "Plotting FFT of wave file")
+
+Method has following parameters optional parameters on top:
+
+* `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
+* `freqCutOff` as `Pair<Int, Int>` - the range of the frequencies to display, by default `0 to sampleRate.toInt() / 2`.
+
+### Data Frames
+
+Whenever you want to plot yourself the data, you may get data in the format ready to be absorbed by `lets_plot` by calling `.dataFrame()` function:
+
+* On `Sample` stream
+     * The parameters are:
+        * `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
+     * The output table has following columns:
+        * `time, ms` -- the time marker of the sample (Double).
+        * `value` -- the double value of the sample (Double).
+* On `FftSample` stream to look in motion:
+    * The parameters are:
+        * `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
+        * `freqCutOff` as `Pair<Int, Int>` - the range of the frequencies to display, by default `0 to sampleRate.toInt() / 2`.
+    * The output table has following columns:
+        * `time` -- the time marker of the sample in milliseconds (Double)
+        * `freq` -- the frequency in Hz (Double).
+        * `value` -- the value in dB (Double).
+* On `FftSample` stream to look at a specific time:
+    * The parameters are:
+        * `offset` -- the time marker to look at of `TimeMeasure` typr, i.e. `100.ms`, `3.s`, etc.
+        * `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
+        * `freqCutOff` as `Pair<Int, Int>` - the range of the frequencies to display, by default `0 to sampleRate.toInt() / 2`.
+    * The output table has following columns:
+        * `frequency, Hz` -- the frequency in Hz (Double).
+        * `value, dB` -- the value in dB (Double).
+
 ## Management server
 
-Management server allows you to change the configuration of the running Wave instance via REST API. To start the server specify the `MANAGEMENT_SERVER_PORT` where it is going to be accessible. Once it is started you read or write values.
+Management server allows you to change the [runtime configuration](#runtime-configuration) parameters of the running Wave instance via REST API. To start the server specify the `MANAGEMENT_SERVER_PORT` where it is going to be accessible. Once it is started you read or write values.
 
 * To read the value perform the `GET` request to `http://server:port/config/VARIABLE_NAME`. The `VARIABLE_NAME` can be one of the predefined ones, or your own. The value is returned as a body, if the variable is not found 404 code is returned.
 * To write the value perform the `POST` request to `http://server:port/config/VARIABLE_NAME`. The `VARIABLE_NAME` can be one of the predefined ones, or your own. The value shoudl be specified in the body of request.
