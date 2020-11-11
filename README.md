@@ -22,7 +22,7 @@
 Jupyter + WaveBeans plugins and integration. It is based on:
 
 * [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter)
-* Kotlin 1.4 version of [WaveBeans](https://github.com/WaveBeans/wavebeans/pull/72)
+* [0.3.0-9c7e8b81](https://github.com/WaveBeans/wavebeans/tree/9c7e8b81) version of [WaveBeans]
 
 Project status: underlying projects are in early alpha and beta stages, the extension should also be considered experimental at this point as well.
 
