@@ -1,7 +1,7 @@
 # Jupyter Wave
 
 [ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.0.3.1605121111547) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.0.3.1605121111547/link)
-[ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.0.3.1605121111547?label=Docker&logo=docker) ](https://hub.docker.com/layers/wavebeans/jupyter-wave/0.0.3/images/sha256-00da24458bc5dd2a66f790504895fef618627a28a84d25313dfd97497829b750?context=explore)
+[ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.0.3.1605121111547?label=Docker&logo=docker) ](https://hub.docker.com/layers/wavebeans/jupyter-wave/0.0.3.1605121111547/images/sha256-00da24458bc5dd2a66f790504895fef618627a28a84d25313dfd97497829b750?context=explore)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
