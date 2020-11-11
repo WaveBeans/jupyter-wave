@@ -38,18 +38,15 @@ RUN export JAVA_HOME
 # Install kotlin kernel
 #RUN conda install -c jetbrains kotlin-jupyter-kernel
 
-RUN mkdir -p /build && \
-    chown jovyan /build
-
 USER jovyan
 
-RUN cd /build && \
+RUN mkdir -p /home/jovyan/build && \
+    cd /home/jovyan/build && \
     git clone https://github.com/Kotlin/kotlin-jupyter.git && \
-    cd /build/kotlin-jupyter && \
+    cd /home/jovyan/build/kotlin-jupyter && \
     git fetch --depth 1 origin 8d6704446dac3c09e009fe4a10ea9dfa4f634bad && \
     ./gradlew --no-daemon --info install && \
-    rm -r /build && \
+    rm -r /home/jovyan/build && \
     rm -r /home/jovyan/.gradle
-
 
 COPY jupyter-wave.json /home/jovyan/.ipython/kernels/kotlin/libraries/
