@@ -54,4 +54,6 @@ class PreviewSampleBeanStream(
         Evaluator.evalTableOutput(tableOutput, parameters.sampleRate)
         return tableName
     }
+
+    override val desiredSampleRate: Float? = null
 }

@@ -1,7 +1,7 @@
 # Jupyter Wave
 
-[ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.0.3.1605121111547) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.0.3.1605121111547/link)
-[ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.0.3.1605121111547?label=Docker&logo=docker) ](https://hub.docker.com/layers/wavebeans/jupyter-wave/0.0.3.1605121111547/images/sha256-1b5ed55fdfe9ec6ed023c41f9967df62ff46cfe1eff079996320940ebfac9dcf?context=explore)
+[ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.3.0-fc3c6cb7) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.3.0-fc3c6cb7/link)
+[ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.3.0-fc3c6cb7?label=Docker&logo=docker) ](https://hub.docker.com/layers/wavebeans/jupyter-wave/0.3.0-fc3c6cb7/images/sha256-1b5ed55fdfe9ec6ed023c41f9967df62ff46cfe1eff079996320940ebfac9dcf?context=explore)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -23,7 +23,7 @@
 Jupyter + WaveBeans plugins and integration. It is based on:
 
 * [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter)
-* [0.3.0-9c7e8b81](https://github.com/WaveBeans/wavebeans/tree/9c7e8b81) version of [WaveBeans]
+* [0.3.0-fc3c6cb7](https://github.com/WaveBeans/wavebeans/tree/) version of [WaveBeans](https://wavebeans.io)
 
 Project status: underlying projects are in early alpha and beta stages, the extension should also be considered experimental at this point as well.
 
