@@ -4,7 +4,10 @@ IMAGE=wavebeans/jupyter-wave
 
 if [ -z "$VERSION" ]; then
   VERSION=$(cat ../gradle.properties | grep version | sed -E "s/[^=]+=//")
-  VERSION=${VERSION}$(date +%s)
+  if [[ "$VERSION" == *SNAPSHOT ]]; then
+    NOW=$(date +%s)
+    VERSION=$(echo $VERSION | sed -E "s/SNAPSHOT/$NOW/")
+  fi
 fi
 WAVEBEANS_VERSION=$(cat ../gradle.properties | grep wavebeansVersion  | sed -E "s/[^=]+=//")
 
