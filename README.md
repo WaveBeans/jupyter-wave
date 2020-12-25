@@ -23,7 +23,7 @@
 Jupyter + WaveBeans plugins and integration. It is based on:
 
 * [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter)
-* [0.3.0-fc3c6cb7](https://github.com/WaveBeans/wavebeans/tree/) version of [WaveBeans](https://wavebeans.io)
+* [0.3.0-0709bae9](https://github.com/WaveBeans/wavebeans/tree/0709bae9) version of [WaveBeans](https://wavebeans.io)
 
 Project status: underlying projects are in early alpha and beta stages, the extension should also be considered experimental at this point as well.
 
@@ -91,7 +91,7 @@ wave("dropbox:///song.wav").preview()
 
 Certain things to keep in mind:
 
-* Preview is available only for limited streams, and by default it limits any stream with 10 minutes. You can change it by specifying `maxLength` parameter if you need shorter or longer, also you may use [`trim()`](https://wavebeans.io/docs/api/operations/trim-operation.html) operation yourself, but if you need to do longer then default 10 minutes you would need to specify `maxLength` anyway:
+* Preview is available only for limited streams, and by default it limits any stream with 10 minutes. You can change it by specifying `maxLength` parameter if you need shorter or longer, also you may use [`trim()`](https://wavebeans.io/docs/api/operations/trim-operation.html) operation yourself, but if you need to do longer then default 10 minutes value, you would need to specify `maxLength` anyway:
 
 ```kotlin
 440.sine().preview(maxLength = 1.s) // limit to 1 second
@@ -115,18 +115,35 @@ First of all you need to make sure the library is connected to the notebook:
 %use lets-plot
 ```
 
-And then depending on the stream you may call `.plot()` function tuning the output.
+Then depending on the stream you may call `.plot()` function tuning the output. It returns the `lets_lot` object instance with layers depending on the stream you've called it on, and you may tune the plot further, or adding new layers, e.g. change the size: 
+                                                                                    
+```
+440.sine()
+    .trim(10)
+    .plot() + ggsize(800, 600)
+```
 
 #### Samples
 
-You may plot out the waveform of any `FiniteStream<Sample>`.
+You may plot out the waveform of any stream of `Sample`s with `.plot()` function:
 
-Then you may use `.plot()` function, but before make sure you trimmed it:
+On finite streams (of type `FiniteStream<Sample>`) you can call it directly:
+
+```
+wave("file:///my.wav").plot()
+```
+
+On infinite streams (of type `BeanStream<Sample>`) you you need to make sure the stream is trimmed to some value either with `.trim()` function explicitly, or telling the plot to trim it by itself via specifying `length: TimeMeasure` parameter:
 
 ```kotlin
+// explicitly trimmed stream
 440.sine()
     .trim(10)
     .plot()
+
+// or plot will trim the stream by 10ms itself
+440.sine()
+    .plot(10.ms)
 ```
 
 ![Plotting 440Hz sine](assets/440_sine_plot.png "Plotting 440Hz sine")
@@ -139,34 +156,38 @@ Plot function allows you to specify the sample rate via `sampleRate` parameter, 
 
 #### FftSample
 
-You may plot stream of `FftSample`s as a heat map using `.plot()` function on trimmed stream:
+You may plot stream of `FftSample`s as a heat map using `.plot()` function on explicitly trimmed stream or let plot do this by specifying `length: TimeMeasure`:
 
 ```kotlin
-wave("dropbox:///2.wav")
+val fft = wave("dropbox:///2.wav")
     .window(1001, 501)
     .hamming()
     .fft(1024)
-    .trim(2000)
-    .plot(freqCutOff = 0 to 4500, gsize = 800 to 600)
+
+// trim explicitly
+fft.trim(2000)
+    .plot(freqCutOff = 0 to 4500)
+
+// or let plot do this
+fft.plot(2.s, freqCutOff = 0 to 4500)
 ```
 
 ![Plotting FFT of wave file](assets/wave_fft_in_motion_plot.png "Plotting FFT of wave file")
 
 Method has following parameters:
 
+* `length` as `TimeMeasure` - on an infinite stream allows you to trim the stream implicitly, i.e. `1000.ms`.
 * `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
-* `freqCutOff` as `Pair<Int, Int>` - the range of the frequencies to display, by default `0 to sampleRate.toInt() / 2`.
-* `gsize` as `Pair<Int, Int>` - the size (x and y respectively) of the rendering image provided to `lets_plot.ggsize()`, by default `1000 to 600`.
+* `freqCutOff` as `Pair<Number, Number>` - the range of the frequencies to display, by default `0 to sampleRate / 2.0`.
 
-You may also plot the FFT at specific time moment by specifying `offset` parameter. The `offset` has `TimeMeasure` type, i.e. `100.ms`, `3.s`, etc. 
+You may also call `plotAt()` to render FFT at specific time moment. It reuiqres `offset` parameter which is of `TimeMeasure` type, i.e. `100.ms`, `3.s`, etc. The `plotAt()` available for any stream. 
 
 ```kotlin
 wave("dropbox:///2.wav")
     .window(1001, 501)
     .hamming()
     .fft(1024)
-    .trim(2000)
-    .plot(offset = 1000.ms, freqCutOff = 0 to 4500)
+    .plotAt(offset = 1000.ms, freqCutOff = 0 to 4500)
 ```
 
 ![Plotting FFT of wave file](assets/wave_fft_plot.png "Plotting FFT of wave file")
@@ -180,28 +201,40 @@ Method has following parameters optional parameters on top:
 
 Whenever you want to plot yourself the data, you may get data in the format ready to be absorbed by `lets_plot` by calling `.dataFrame()` function:
 
-* On `Sample` stream
+* On `Sample` stream:
      * The parameters are:
+        * `length` as `TimeMeasure` - on an infinite stream allows to trim the stream implicitly, i.e. `1.s`
+        * `timeShift` as `Double` - the number of seconds to shift the stream to, if positive moves right, if negative moves left, by default `0.0`.
         * `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
-     * The output table has following columns:
-        * `time, ms` -- the time marker of the sample (Double).
+     * The output table has the following columns:
+        * `time` -- the time marker of the sample in seconds (Double).
         * `value` -- the double value of the sample (Double).
 * On `FftSample` stream to look in motion:
     * The parameters are:
+        * `length` as `TimeMeasure` - on an infinite stream allows to trim the stream implicitly, i.e. `1.s` 
         * `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
-        * `freqCutOff` as `Pair<Int, Int>` - the range of the frequencies to display, by default `0 to sampleRate.toInt() / 2`.
-    * The output table has following columns:
-        * `time` -- the time marker of the sample in milliseconds (Double)
-        * `freq` -- the frequency in Hz (Double).
+        * `freqCutOff` as `Pair<Number, Number>` - the range of the frequencies to display, by default `0 to sampleRate / 2.0`.
+    * The output table has the following columns:
+        * `time` -- the time marker of the sample in seconds (Double).
+        * `frequency` -- the frequency in Hz (Double).
         * `value` -- the value in dB (Double).
-* On `FftSample` stream to look at a specific time:
+* On `FftSample` stream to look at a specific time (the function name is `dataFrameAt()`):
     * The parameters are:
-        * `offset` -- the time marker to look at of `TimeMeasure` typr, i.e. `100.ms`, `3.s`, etc.
+        * `offset` -- the time marker to look at of `TimeMeasure` type, i.e. `100.ms`, `3.s`, etc.
         * `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
-        * `freqCutOff` as `Pair<Int, Int>` - the range of the frequencies to display, by default `0 to sampleRate.toInt() / 2`.
-    * The output table has following columns:
-        * `frequency, Hz` -- the frequency in Hz (Double).
-        * `value, dB` -- the value in dB (Double).
+        * `freqCutOff` as `Pair<Number, Number>` - the range of the frequencies to display, by default `0 to sampleRate / 2.0`.
+    * The output table has the following columns:
+        * `frequency` -- the frequency in Hz (Double).
+        * `value` -- the value in dB (Double).
+* On any type `T` stream:
+     * The parameters are:
+        * `length` as `TimeMeasure` - on an infinite stream allows to trim the stream implicitly, i.e. `1.s`
+        * `timeShift` as `Double` - the number of seconds to shift the stream to, if positive moves right, if negative moves left, by default `0.0`.
+        * `sampleRate` as `Float` - the sample rate to evaluate the stream with, by default `44100.0f`.
+        * `mapper` as `(T) -> Any` - the mapper function to map value column from the stream values, by default the value remains intact: `mapper: (T) -> Any = { it } `
+     * The output table has the following columns:
+        * `time` -- the time marker of the sample in seconds (Double).
+        * `value` -- the value of the sample (`T` or the type you're mapping to).
 
 ## Management server
 

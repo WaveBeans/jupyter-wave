@@ -88,11 +88,10 @@ java {
 }
 
 tasks.test {
-    systemProperty("SPEK_TIMEOUT", 0)
+    systemProperty("spek2.execution.test.timeout", 0)
     useJUnitPlatform {
         includeEngines("spek2")
     }
-    maxHeapSize = "2g"
 }
 
 publishing {
