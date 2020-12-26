@@ -1,0 +1,43 @@
+<!--
+Preview functionality testing page
+===========
+
+Start the server with WaveBeansCli to start streaming, i.e.:
+
+```
+wavebeans -e "wave(\"file://$HOME/tmp/2.wav\").window(64).map { sampleVectorOf(it) }.toTable(\"testTable\").out()" \
+    --http 9000 --http-wait -1
+```
+
+And the `Run` in IntelliJ IDEA on preview-test.html to launch it in browser.
+
+-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="wavesurfer.js"></script>
+<script src="wavesurfer.timeline.js"></script>
+<script src="wavesurfer.cursor.js"></script>
+<script src="wavesurfer.minimap.js"></script>
+<script src="wavesurfer.regions.js"></script>
+<script src="audio.js"></script>
+
+<body>
+<div class="testTable">
+    <div class="wave" style="position: relative; overflow: hidden"></div>
+    <div class="timeline"></div>
+
+    <div class="controls">
+        <button data-action="play"><span class="material-icons">play_arrow</span></button>
+        <button data-action="pause"><span class="material-icons">pause</span></button>
+        <input id="aa" data-action="zoom" type="range" style="width: 60%" title="Zoom"/>
+        <div class="regions">
+        </div>
+    </div>
+</div>
+<script>
+    var server = "localhost:9000"
+    var tableName = "testTable"
+    WaveView('http://' + server + '/audio/' + tableName + '/stream/wav?offset=10m', tableName).init()
+</script>
+
+
+</body>

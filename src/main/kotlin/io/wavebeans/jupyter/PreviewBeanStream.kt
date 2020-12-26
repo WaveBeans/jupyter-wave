@@ -27,6 +27,25 @@ class PreviewSampleBeanStream(
         override val parameters: PreviewSampleBeanParams
 ) : BeanStream<SampleVector>, SinkBean<SampleVector> {
 
+    companion object {
+        fun getInitHtml(): String {
+            return """
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+            <script type="text/javascript">
+                ${this::class.java.getResourceAsStream("/wavesurfer.js").reader().readText()}
+                ${this::class.java.getResourceAsStream("/wavesurfer.timeline.js").reader().readText()}
+                ${this::class.java.getResourceAsStream("/wavesurfer.cursor.js").reader().readText()}
+                ${this::class.java.getResourceAsStream("/wavesurfer.minimap.js").reader().readText()}
+                ${this::class.java.getResourceAsStream("/wavesurfer.regions.js").reader().readText()}
+            </script>
+            <script type="text/javascript">
+                ${this::class.java.getResourceAsStream("/audio.js").reader().readText()}
+            </script>
+        """.trimIndent()
+        }
+    }
+
+
     override fun asSequence(sampleRate: Float): Sequence<SampleVector> = input.asSequence(sampleRate)
 
     fun renderPreview(): String {
@@ -34,7 +53,17 @@ class PreviewSampleBeanStream(
 
         val server = "${Config.instance.advertisedProtocol}://${Config.instance.advertisedHost}:${Config.instance.advertisedPort}"
         return """
-            <div id="$tableName"></div>
+            <div class="$tableName">
+                <div class="wave" style="position: relative; overflow: hidden"></div>
+                <div class="timeline"></div>
+            
+                <div class="controls">
+                    <button data-action="play"><span class="material-icons">play_arrow</span></button>
+                    <button data-action="pause"><span class="material-icons">pause</span></button>
+                    <input id="aa" data-action="zoom" type="range" style="width: 60%"/>
+                    <div class="regions"></div>
+                </div>
+            </div>
             <script>
                 WaveView('$server/audio/$tableName/stream/wav?offset=${parameters.maxLength}', '$tableName').init()
             </script>
