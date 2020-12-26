@@ -36,17 +36,18 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
 
 # Install kotlin kernel
-#RUN conda install -c jetbrains kotlin-jupyter-kernel
+RUN conda install -c jetbrains kotlin-jupyter-kernel=0.8.3.64
 
 USER jovyan
 
-RUN mkdir -p /home/jovyan/build && \
-    cd /home/jovyan/build && \
-    git clone https://github.com/Kotlin/kotlin-jupyter.git && \
-    cd /home/jovyan/build/kotlin-jupyter && \
-    git fetch --depth 1 origin 8d6704446dac3c09e009fe4a10ea9dfa4f634bad && \
-    ./gradlew --no-daemon --info install && \
-    rm -r /home/jovyan/build && \
-    rm -r /home/jovyan/.gradle
+# build from scratch
+#RUN mkdir -p /home/jovyan/build && \
+#    cd /home/jovyan/build && \
+#    git clone https://github.com/Kotlin/kotlin-jupyter.git && \
+#    cd /home/jovyan/build/kotlin-jupyter && \
+#    git fetch --depth 1 origin d486046b068a9e1eba5e3ebf9fe951c5ada8be98 && \
+#    ./gradlew --no-daemon --info install && \
+#    rm -r /home/jovyan/build && \
+#    rm -r /home/jovyan/.gradle
 
-COPY jupyter-wave.json /home/jovyan/.ipython/kernels/kotlin/libraries/
+COPY jupyter-wave.json /opt/conda/lib/python3.8/site-packages/run_kotlin_kernel/libraries/

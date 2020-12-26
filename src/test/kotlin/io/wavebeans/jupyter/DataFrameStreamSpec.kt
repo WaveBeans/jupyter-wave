@@ -193,6 +193,44 @@ object DataFrameStreamSpec : Spek({
                         value().size().isEqualTo(6)
                     }
                 }
+                it("should create a thinned out data frame") {
+                    assertThat(input.trim(31).dataFrame(
+                            sampleRate = 1000.0f,
+                            timeThinningFunction = { it.index % 2 == 0L }
+                    )).all {
+                        time().isEqualTo(listOf(
+                                0.000, 0.000, 0.000, 0.000,
+                                0.010, 0.010, 0.010, 0.010,
+                                0.020, 0.020, 0.020, 0.020,
+                                0.030, 0.030, 0.030, 0.030,
+                        ))
+                        frequency().isEqualTo(listOf(
+                                0.0, 125.0, 250.0, 375.0,
+                                0.0, 125.0, 250.0, 375.0,
+                                0.0, 125.0, 250.0, 375.0,
+                                0.0, 125.0, 250.0, 375.0,
+                        ))
+                        value().size().isEqualTo(16)
+                    }
+                }
+                it("should create a data frame with thinned out frequencies") {
+                    assertThat(input.trim(15).dataFrame(
+                            sampleRate = 1000.0f,
+                            frequencyThinningFunction = { i, _ -> i % 2 == 0 }
+                    )).all {
+                        time().isEqualTo(listOf(
+                                0.000, 0.000,
+                                0.005, 0.005,
+                                0.010, 0.010,
+                        ))
+                        frequency().isEqualTo(listOf(
+                                0.0, 250.0,
+                                0.0, 250.0,
+                                0.0, 250.0,
+                        ))
+                        value().size().isEqualTo(6)
+                    }
+                }
                 it("should fail on negative sample rate") {
                     assertThat(catch { input.trim(1).dataFrame(sampleRate = -1.0f) })
                             .isNotNull()
@@ -248,6 +286,46 @@ object DataFrameStreamSpec : Spek({
                                 125.0, 250.0,
                                 125.0, 250.0,
                                 125.0, 250.0,
+                        ))
+                        value().size().isEqualTo(6)
+                    }
+                }
+                it("should create a thinned out data frame") {
+                    assertThat(input.dataFrame(
+                            31.ms,
+                            sampleRate = 1000.0f,
+                            timeThinningFunction = { it.index % 2 == 0L }
+                    )).all {
+                        time().isEqualTo(listOf(
+                                0.000, 0.000, 0.000, 0.000,
+                                0.010, 0.010, 0.010, 0.010,
+                                0.020, 0.020, 0.020, 0.020,
+                                0.030, 0.030, 0.030, 0.030,
+                        ))
+                        frequency().isEqualTo(listOf(
+                                0.0, 125.0, 250.0, 375.0,
+                                0.0, 125.0, 250.0, 375.0,
+                                0.0, 125.0, 250.0, 375.0,
+                                0.0, 125.0, 250.0, 375.0,
+                        ))
+                        value().size().isEqualTo(16)
+                    }
+                }
+                it("should create a data frame with thinned out frequencies") {
+                    assertThat(input.dataFrame(
+                            15.ms,
+                            sampleRate = 1000.0f,
+                            frequencyThinningFunction = { i, _ -> i % 2 == 0 }
+                    )).all {
+                        time().isEqualTo(listOf(
+                                0.000, 0.000,
+                                0.005, 0.005,
+                                0.010, 0.010,
+                        ))
+                        frequency().isEqualTo(listOf(
+                                0.0, 250.0,
+                                0.0, 250.0,
+                                0.0, 250.0,
                         ))
                         value().size().isEqualTo(6)
                     }
