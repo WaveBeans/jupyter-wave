@@ -1,7 +1,14 @@
 # Jupyter Wave
 
-[ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.3.0-fc3c6cb7) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.3.0-fc3c6cb7/link)
-[ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.3.0-fc3c6cb7?label=Docker&logo=docker) ](https://hub.docker.com/layers/127231740/wavebeans/jupyter-wave/0.3.0-fc3c6cb7/images/sha256-dde0dfd74eb788a9b2d64d5e154716fd3805ab9cc3941c6c996d0f33441fef2f?context=explore)
+[ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.3.0-0709bae9) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.3.0-0709bae9/link)
+[ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.3.0-0709bae9?label=Docker&logo=docker) ](https://hub.docker.com/layers/127231740/wavebeans/jupyter-wave/0.3.0-0709bae9/images/sha256-c372fc888c679f34ac032e7c3a929ad656659db5ff3023b66bb0577f6b1c819a?context=explore)
+
+Jupyter + [WaveBeans](https://wavebeans.io) plugins and integration. It is based on:
+
+* [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter)
+* [0.3.0-0709bae9](https://github.com/WaveBeans/wavebeans/tree/0709bae9) version of [WaveBeans](https://wavebeans.io)
+
+Project status: underlying projects are in early alpha and beta stages, the extension should also be considered experimental at this point as well.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -20,52 +27,34 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-Jupyter + WaveBeans plugins and integration. It is based on:
-
-* [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter)
-* [0.3.0-0709bae9](https://github.com/WaveBeans/wavebeans/tree/0709bae9) version of [WaveBeans](https://wavebeans.io)
-
-Project status: underlying projects are in early alpha and beta stages, the extension should also be considered experimental at this point as well.
 
 ## Jupyter Plugin
 
-The Kotlin Jupyter plugin supports adding libraries. This is how Jupyter-Wave runs, it is done via adding file `jupyter/jupyter-wave.json`. The file itself is a template which expects the library version and WaveBeans version specified during build time. The versions are specified in `gradle.properties` file.
-
-Overall follow [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter) documentation how to add the library to get some sense.
+The Kotlin Jupyter plugin supports adding libraries. This is how Jupyter-Wave runs, it is done via adding file [`jupyter/stable/jupyter-wave.json`](/jupyter/stable/jupyter-wave.json). Overall follow [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter) documentation on how to add the library to get some sense.
 
 ## Running via Docker
 
-The recommended way to run Jupyter instance is via Docker. In `jupyter/` directory you can find `Dockerfile` which builds the image. 
+The recommended way to run Jupyter instance is via Docker. The images are pushed to [hub.docker.com](https://hub.docker.com/repository/docker/wavebeans/jupyter-wave/general) where you can choose the appropriate one or just use the latest one.
 
-There is a `build.sh` script that automates the build and run (via `andRun` parameter) of the docker image. Default run behaviour start everything that needs to make Jupyter accessible on `http://localhost:8888`.
-
-In order to run by yourself use that commands as a base:
+Here is a command snippet where: 
+* it exposes ports (8888 for Jupyter itself, 2844 for HTTP Server) and tells to start the server on HTTP_PORT, it's being used to serve some content *(required)*,
+* it mounts the default working dir so all notebooks are going to be stored in current directory under `notebooks` folder *(optional, but recommended)*,
+* mounts the ivy cache directory in current directory under `notebooks` folder, so it is not initiated every start *(optional)*,
+* it bypasses the [Dropbox credentials](https://wavebeans.io/docs/api/file-systems.html#dropbox-file-system) which initializes automatically the dropbox filesystem *(optional, and require extra effort)*,
+    * if you want to use the local file system which is available by default consider using it with path `file:///home/jovyan/work` to access files under the same directory with notebooks, or mount a different volume for it.
+* the overriden entry point is optional, but helps to avoid entering the authorization token every time you restart the server 
 
 ```bash
-  cd jupyter/
-
-  # prepare the library descriptor, assuming VERSION and WAVEBEANS_VERSION are populated with correct version in maven repos (local or remote)
-  cat jupyter-wave.json.tpl | \
-      sed "s/\$VERSION/$VERSION/" | \
-      sed "s/\$WAVEBEANS_VERSION/$WAVEBEANS_VERSION/" \
-      > jupyter-wave.json
-
-  # build image
-  docker build -t jupyter-wave .
-
-  # run
-  docker run -it \
+docker run -it \
     -p 8888:8888 \
     -p 2844:2844 \
     -e DROPBOX_CLIENT_IDENTIFIER=${DROPBOX_CLIENT_IDENTIFIER} \
     -e DROPBOX_ACCESS_TOKEN=${DROPBOX_ACCESS_TOKEN} \
     -e HTTP_PORT=2844 \
-    -e MANAGEMENT_SERVER_PORT=2845 \
     -v "$(pwd)"/notebooks:/home/jovyan/work \
-    -v ${HOME}/.m2:/home/jovyan/maven-local \
     -v "$(pwd)"/ivy_cache:/home/jovyan/.ivy2/cache \
-    "jupyter-wave" \
-    jupyter lab --NotebookApp.token=''
+wavebeans/jupyter-wave \
+jupyter lab --NotebookApp.token=''
 ```
 
 ## Runtime Configuration

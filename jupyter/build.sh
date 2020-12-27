@@ -9,19 +9,17 @@ if [ -z "$VERSION" ]; then
     VERSION=$(echo $VERSION | sed -E "s/SNAPSHOT/$NOW/")
   fi
 fi
-WAVEBEANS_VERSION=$(cat ../gradle.properties | grep wavebeansVersion  | sed -E "s/[^=]+=//")
 
-echo "VERSION: '$VERSION'"
-echo "WAVEBEANS_VERSION: '$WAVEBEANS_VERSION'"
-
-cat jupyter-wave.json.tpl | \
-  sed "s/\$VERSION/$VERSION/" | \
-  sed "s/\$WAVEBEANS_VERSION/$WAVEBEANS_VERSION/" \
-  > jupyter-wave.json
+ADDITIONAL_REPOSITORIES=""
+if [ "$1" == "andRun" ]; then
+  ADDITIONAL_REPOSITORIES='\"file:///home/jovyan/maven-local/repository\",'
+fi
+./tpl.sh jupyter-wave.json "$VERSION" "$ADDITIONAL_REPOSITORIES"
 
 TAG=$IMAGE:$VERSION
+TAG_LATEST=$IMAGE:latest
 
-docker build -t $TAG .
+docker build -t $TAG -t $TAG_LATEST .
 
 rm jupyter-wave.json
 
@@ -56,4 +54,5 @@ fi
 
 if [ "$1" == "andPush" ]; then
     docker push $TAG
+    docker push $TAG_LATEST
 fi

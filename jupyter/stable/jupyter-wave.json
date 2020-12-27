@@ -1,11 +1,11 @@
 {
   "properties": {
-    "apiVersion": "$VERSION",
-    "libraryVersion": "$WAVEBEANS_VERSION"
+    "apiVersion": "0.3.0-0709bae9",
+    "libraryVersion": "0.3.0-0709bae9"
   },
   "link": "https://github.com/WaveBeans/jupyter-wave",
   "repositories": [
-    $ADDITIONAL_REPOSITORIES
+    
     "https://dl.bintray.com/wavebeans/wavebeans/",
     "https://jetbrains.bintray.com/lets-plot-maven"
   ],

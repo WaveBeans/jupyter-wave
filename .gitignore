@@ -4,3 +4,4 @@ ivy_cache/
 build/
 out/
 .idea
+.DS_Store
