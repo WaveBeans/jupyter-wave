@@ -83,11 +83,13 @@ On top of [WaveBeans API](https://wavebeans.io/docs/api/) there are a few functi
 
 ### Preview
 
-Preview allows you to listen to sample stream, it is available for any `BeanStream<Sample>`:
+Preview allows you to listen and explore briefly the sample stream, it is available for any `BeanStream<Sample>`:
 
 ```kotlin
 wave("dropbox:///song.wav").preview()
 ```
+
+![Waveform Preview](assets/wave_preview.png "Waveform Preview")
 
 Certain things to keep in mind:
 
