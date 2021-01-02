@@ -1,12 +1,12 @@
 # Jupyter Wave
 
-[ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.3.0-0709bae9) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.3.0-0709bae9/link)
-[ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.3.0-0709bae9?label=Docker&logo=docker) ](https://hub.docker.com/layers/127231740/wavebeans/jupyter-wave/0.3.0-0709bae9/images/sha256-c372fc888c679f34ac032e7c3a929ad656659db5ff3023b66bb0577f6b1c819a?context=explore)
+[ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.3.0) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.3.0/link)
+[ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.3.0?label=Docker&logo=docker) ](https://hub.docker.com/layers/127231740/wavebeans/jupyter-wave/0.3.0/images/sha256-99f9500bfd5fe09bbb6a04108e6587d488d76a319c058b6b9f2469b2e2c0d09f?context=explore)
 
 Jupyter + [WaveBeans](https://wavebeans.io) plugins and integration. It is based on:
 
 * [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter)
-* [0.3.0-0709bae9](https://github.com/WaveBeans/wavebeans/tree/0709bae9) version of [WaveBeans](https://wavebeans.io)
+* [0.3.0](https://github.com/WaveBeans/wavebeans/tree/0.3.0) version of [WaveBeans](https://wavebeans.io)
 
 Project status: underlying projects are in early alpha and beta stages, the extension should also be considered experimental at this point as well.
 
