@@ -1,6 +1,11 @@
 #!/bin/bash
 
+set -e
+
 IMAGE=wavebeans/jupyter-wave
+JUPYTER_PORT=8999
+WB_HTTP_PORT=2844
+WB_MANAGEMENT_PORT=2845
 
 if [ -z "$VERSION" ]; then
   VERSION=$(cat ../gradle.properties | grep version | sed -E "s/[^=]+=//")
@@ -28,7 +33,7 @@ if [ "$1" == "andRun" ]; then
 
   # prepare artifacts
   cd ../
-  ./gradlew clean publishToMavenLocal --info -Pversion=$VERSION
+  ./gradlew clean publishToMavenLocal --info -Pversion=$VERSION -Pskip.signing
 
   cd $DOCKER_BUILD_DIR || exit
 
@@ -38,15 +43,15 @@ if [ "$1" == "andRun" ]; then
 
   # run
   docker run -it \
-    -p 8888:8888 \
-    -p 2844:2844 \
-    -p 2845:2845 \
+    -p $JUPYTER_PORT:8888 \
+    -p $WB_HTTP_PORT:$WB_HTTP_PORT \
+    -p $WB_MANAGEMENT_PORT:$WB_MANAGEMENT_PORT \
     -e DROPBOX_CLIENT_IDENTIFIER=${DROPBOX_CLIENT_IDENTIFIER} \
     -e DROPBOX_ACCESS_TOKEN=${DROPBOX_ACCESS_TOKEN} \
-    -e HTTP_PORT=2844 \
-    -e MANAGEMENT_SERVER_PORT=2845 \
+    -e HTTP_PORT=$WB_HTTP_PORT \
+    -e MANAGEMENT_SERVER_PORT=$WB_MANAGEMENT_PORT \
     -v "$(pwd)"/notebooks:/home/jovyan/work \
-    -v ${HOME}/.m2:/home/jovyan/maven-local \
+    -v "${HOME}"/.m2:/home/jovyan/maven-local \
     -v "$(pwd)"/ivy_cache:/home/jovyan/.ivy2/cache \
     "${TAG}" \
     jupyter lab --NotebookApp.token=''

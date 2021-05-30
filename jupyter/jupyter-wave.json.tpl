@@ -6,20 +6,13 @@
   "link": "https://github.com/WaveBeans/jupyter-wave",
   "repositories": [
     $ADDITIONAL_REPOSITORIES
-    "https://dl.bintray.com/wavebeans/wavebeans/",
     "https://jetbrains.bintray.com/lets-plot-maven"
   ],
   "dependencies": [
-    "io.wavebeans.jupyter:wave:$apiVersion",
-    "io.wavebeans:lib:$libraryVersion",
-    "io.wavebeans:exe:$libraryVersion",
-    "io.wavebeans:http:$libraryVersion",
-    "io.wavebeans.filesystems:core:$libraryVersion",
-    "io.wavebeans.filesystems:dropbox:$libraryVersion",
-    "io.wavebeans.metrics:core:$libraryVersion",
-    "io.ktor:ktor-server-core:1.3.2",
-    "io.ktor:ktor-server-netty:1.3.2",
-    "io.ktor:ktor-serialization:1.3.2",
+    "io.wavebeans:jupyter-wave:$apiVersion",
+    "io.ktor:ktor-server-core:1.4.1",
+    "io.ktor:ktor-server-netty:1.4.1",
+    "io.ktor:ktor-serialization:1.4.1",
     "io.github.microutils:kotlin-logging:1.7.7",
     "ch.qos.logback:logback-classic:1.2.3",
     "com.dropbox.core:dropbox-core-sdk:3.1.4"

@@ -1,6 +1,5 @@
 # Jupyter Wave
 
-[ ![Download](https://api.bintray.com/packages/wavebeans/wavebeans/wavebeans/images/download.svg?version=0.3.0) ](https://bintray.com/wavebeans/wavebeans/wavebeans/0.3.0/link)
 [ ![Docker Image](https://img.shields.io/docker/v/wavebeans/jupyter-wave/0.3.0?label=Docker&logo=docker) ](https://hub.docker.com/layers/127231740/wavebeans/jupyter-wave/0.3.0/images/sha256-99f9500bfd5fe09bbb6a04108e6587d488d76a319c058b6b9f2469b2e2c0d09f?context=explore)
 
 Jupyter + [WaveBeans](https://wavebeans.io) plugins and integration. It is based on:

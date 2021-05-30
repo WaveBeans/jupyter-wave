@@ -36,7 +36,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
 
 # Install kotlin kernel
-RUN conda install -c jetbrains kotlin-jupyter-kernel=0.8.3.64
+RUN conda install -c jetbrains kotlin-jupyter-kernel=0.10.0.40
 
 USER jovyan
 
@@ -51,3 +51,5 @@ USER jovyan
 #    rm -r /home/jovyan/.gradle
 
 COPY jupyter-wave.json /opt/conda/lib/python3.8/site-packages/run_kotlin_kernel/libraries/
+
+#ENTRYPOINT ls -laR ~/maven-local/repository/io/wavebeans/jupyter-wave/0.3.0/
